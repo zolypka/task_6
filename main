@@ -1,0 +1,59 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+import io  
+
+data = """
+65 27 11 27600
+21 64 21 52350
+57 24 9 25980
+48 35 15 34560
+12 68 18 49670
+6 79 25 62420
+19 35 8 26400
+27 39 18 36490
+16 56 15 46520
+23 48 12 42980
+29 40 11 39980
+48 29 11 27830
+55 8 5 21740
+49 9 4 19430
+35 72 21 52394
+"""
+
+
+data = pd.read_csv(io.StringIO(data), sep=" ", header=None)  # Используем io.StringIO
+data.columns = ['param1', 'param2', 'param3', 'param4']
+
+
+X = data[['param1', 'param2', 'param3']]
+y = data['param4']
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+
+y_pred = model.predict(X_test)
+
+
+for i in range(len(y_test)):
+    print(f'Фактическое значение: {y_test.iloc[i]}, Предсказанное значение: {y_pred[i]}')
+
+
+print("Коэффициенты:", model.coef_)
+print("Свободный член:", model.intercept_)
+
+
+param1 = 30.0  
+param2 = 40.0  
+param3 = 10.0  
+
+new_data = pd.DataFrame([[param1, param2, param3]], columns=['param1', 'param2', 'param3'])
+predicted_value = model.predict(new_data)
+
+print(f'Предсказанное значение для param4: {predicted_value[0]}')
